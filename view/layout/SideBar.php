@@ -1,3 +1,9 @@
+<!-- ======= Toast ======= -->
+<div id="toastAction" class="toast m-4" style="position: absolute; top: 0; right: 0; z-index: 999;">
+    <div id="toastMessage" class="alert alert-primary alert-dismissible fade show m-0">
+        This message !
+    </div>
+</div>
 <!-- ======= Header ======= -->
 <header id="header" class="header fixed-top d-flex align-items-center">
 

@@ -222,16 +222,27 @@ class Action
 		}
 	}
 
+	function get_course()
+	{
+		$data = array();
+		$course = $this->db->query("SELECT * FROM courses order by id asc");
+		while ($row = $course->fetch_assoc()) {
+			$data['data'][] = $row;
+		}
+		return json_encode($data);
+	}
 
 	function save_course()
 	{
 		extract($_POST);
 		$data = " course = '$course' ";
 		$data .= ", description = '$description' ";
-		$check = $this->db->query("SELECT * FROM courses where course = '$course' " . (!empty($id) ? ' and id!=$id ' : ''))->num_rows;
-		if ($check > 0) {
-			return 2;
-			exit;
+		$check = $this->db->query("SELECT * FROM courses where course = '$course' " . (!empty($id) ? ' and id!=$id ' : ''));
+		if ($check) {
+			if ($check->num_rows > 0) {
+				return 2;
+				exit;
+			}
 		}
 		if (empty($id)) {
 			$save = $this->db->query("INSERT INTO courses set $data");
@@ -463,7 +474,7 @@ class Action
 				$data['attendance_id'] = $row['attendance_id'];
 			}
 		}
-		
+
 		$qry = $this->db->query("SELECT s.subject,co.course,concat(c.level,'-',c.section) as `class` FROM class_subject cs inner join class c on c.id = cs.class_id inner join subjects s on s.id = cs.subject_id inner join courses co on co.id = c.id where cs.id = {$class_subject_id} ");
 		$fetch_array = $qry->fetch_array();
 		if (!empty($fetch_array)) {
@@ -496,8 +507,8 @@ class Action
 
 		$qry = $this->db->query("SELECT s.subject,co.course,concat(c.level,'-',c.section) as `class` FROM class_subject cs inner join class c on c.id = cs.class_id inner join subjects s on s.id = cs.subject_id inner join courses co on co.id = c.id where cs.id = {$class_subject_id} ");
 		if (!empty($fetch_array)) {
-		foreach ($qry->fetch_array() as $k => $v) {
-			$data['details'][$k] = $v;
+			foreach ($qry->fetch_array() as $k => $v) {
+				$data['details'][$k] = $v;
 			}
 		}
 

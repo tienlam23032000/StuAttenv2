@@ -19,6 +19,7 @@
 
     <!-- Vendor CSS Files -->
     <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/vendor/bootstrap/css/dataTables.bootstrap5.min.css" rel="stylesheet">
     <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
     <link href="assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
     <link href="assets/vendor/quill/quill.snow.css" rel="stylesheet">
@@ -30,7 +31,11 @@
     <link href="assets/css/style.css" rel="stylesheet">
 
     <!-- Vendor JS Files -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    <script src="assets/vendor/jQuery/jquery.min.js"></script>
+
+    <script src="assets/vendor/jQuery/jquery.dataTables.min.js"></script>
+    <script src="assets/vendor/bootstrap/js/dataTables.bootstrap5.min.js"></script>
+
     <script src="assets/vendor/apexcharts/apexcharts.min.js"></script>
     <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="assets/vendor/chart.js/chart.umd.js"></script>

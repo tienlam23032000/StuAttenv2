@@ -136,5 +136,10 @@ if($action == "import_excel"){
 	if($save)
 		echo $save;
 }
+if($action == "get_course"){
+	$save = $crud->get_course();
+	if($save)
+		echo $save;
+}
 ob_end_flush();
 ?>

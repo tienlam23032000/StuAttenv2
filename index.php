@@ -29,6 +29,7 @@ if (!array_key_exists($global->thisPage, $global->arrayRule)) {
     return;
 }
 
+echo '<div aria-live="polite" aria-atomic="true" style="position: relative;">';
 include './view/layout/SideBar.php';
 echo "<main id='main' class='main'>";
 
@@ -69,6 +70,7 @@ switch ($global->thisPage) {
 }
 echo '</main>';
 include './view/layout/Footer.php';
+echo '</div>';
 ob_end_flush();
 ?>
 
