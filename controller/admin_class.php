@@ -260,15 +260,29 @@ class Action
 			return 1;
 		}
 	}
+
+	function get_subject()
+	{
+		$data = array();
+		$course = $this->db->query("SELECT * FROM subjects order by id asc");
+		while ($row = $course->fetch_assoc()) {
+			$data['data'][] = $row;
+		}
+		return json_encode($data);
+	}
+
+
 	function save_subject()
 	{
 		extract($_POST);
 		$data = " subject = '$subject' ";
 		$data .= ", description = '$description' ";
-		$check = $this->db->query("SELECT * FROM subjects where subject = '$subject' " . (!empty($id) ? ' and id!=$id ' : ''))->num_rows;
-		if ($check > 0) {
-			return 2;
-			exit;
+		$check = $this->db->query("SELECT * FROM subjects where subject = '$subject' " . (!empty($id) ? ' and id!=$id ' : ''));
+		if ($check) {
+			if ($check->num_rows > 0) {
+				return 2;
+				exit;
+			}
 		}
 		if (empty($id)) {
 			$save = $this->db->query("INSERT INTO subjects set $data");
@@ -286,23 +300,49 @@ class Action
 			return 1;
 		}
 	}
+	function get_class()
+	{
+		$data = array();
+		$sql = $sql = "SELECT \n"
+			. "class.id,\n"
+			. "class.course_id,\n"
+			. "courses.course as course_name,\n"
+			. "class.level as class,\n"
+			. "class.section as subclass,\n"
+			. "class.status \n"
+			. "FROM `class` \n"
+			. "JOIN `courses` on class.course_id = courses.id;";
+
+		$class = $this->db->query($sql);
+		while ($row = $class->fetch_assoc()) {
+			$data['data'][] = $row;
+		}
+		return json_encode($data);
+	}
+
 	function save_class()
 	{
 		extract($_POST);
-		$data = " course_id = '$course_id' ";
-		$data .= ", level = '$level' ";
-		$data .= ", section = '$section' ";
-		$data2 = " course_id = '$course_id' ";
-		$data2 .= "and level = '$level' ";
-		$data2 .= "and section = '$section' ";
+		if (empty($course_id)) {
+			return 3;
+		}
+		$statusParse = isset($status) ? 1 : 0;
 
-		$check = $this->db->query("SELECT * FROM class where $data2 " . (!empty($id) ? ' and id!=$id ' : ''))->num_rows;
-		if ($check > 0) {
+		$data = " course_id = '$course_id' ";
+		$data .= ", level = '$class' ";
+		$data .= ", section = '$subclass' ";
+		$data .= ", status = '$statusParse' ";
+
+		$data2 = " course_id = '$course_id' ";
+		$data2 .= "and level = '$class' ";
+		$data2 .= "and section = '$subclass' ";
+		$data2 .= "and status = '$statusParse' ";
+
+		$check = $this->db->query("SELECT * FROM class where $data2 " . (!empty($id) ? ' and id!=$id ' : ''));
+		if ($check && $check->num_rows > 0) {
 			return 2;
-			exit;
 		}
 		if (empty($id)) {
-
 			$save = $this->db->query("INSERT INTO class set $data");
 		} else {
 			$save = $this->db->query("UPDATE class set $data where id = $id");

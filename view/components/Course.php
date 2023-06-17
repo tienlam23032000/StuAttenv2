@@ -115,7 +115,7 @@
                     render: function(data, type, row) {
                         return `
                             <div>
-                                <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalForm" data-add='false' data-course='${JSON.stringify(row)}'>
+                                <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalForm" data-add='false' data-bind='${JSON.stringify(row)}'>
                                     Edit
                                 </button>
                                 <button class="btn btn-sm btn-danger delete_course" data-bs-toggle="modal" data-bs-target="#modalConfirm" data-id='${data}' type="button">
@@ -135,15 +135,12 @@
         $('#modalForm').on('show.bs.modal', function(event) {
             var button = $(event.relatedTarget)
             var modal = $(this)
-            if (!button.data('add')) {
-                var recipient = button.data('course')
-                modal.find('.modal-title').text('Edit Course')
-                modal.find('.modal-body input[name=course]').val(recipient.course)
-                modal.find('.modal-body textarea[name=description]').val(recipient.description)
-                modal.find('.modal-body input[name=id]').val(recipient.id)
-                return
-            }
-            modal.find('.modal-title').text('Add Course')
+            var recipient = !button.data('add') ? button.data('bind') : null
+            var title = button.data('add') ? 'Add Course' : 'Edit Course'
+            modal.find('.modal-title').text(title)
+            modal.find('.modal-body input[name=course]').val(recipient?.course)
+            modal.find('.modal-body textarea[name=description]').val(recipient?.description)
+            modal.find('.modal-body input[name=id]').val(recipient?.id)
         })
 
         $('#modalConfirm').on('show.bs.modal', function(event) {
@@ -198,32 +195,5 @@
                 }
             })
         })
-
-        //Save
-        $('#form').submit(function(e) {
-            e.preventDefault()
-            $.ajax({
-                url: 'controller/ajax.php?action=save_course',
-                data: new FormData($(this)[0]),
-                cache: false,
-                contentType: false,
-                processData: false,
-                method: 'POST',
-                type: 'POST',
-                success: function(resp) {
-                    if (resp == 1) {
-                        $('#msg').html('')
-                        $('#modalForm').modal('toggle')
-                        alert_toast("Data successfully saved", 'success', 5000)
-                        setTimeout(function() {
-                            location.reload()
-                        }, 1500)
-                    } else if (resp == 2) {
-                        $('#msg').html('<div class="alert alert-danger mx-2">Course already exist.</div>')
-                    }
-                }
-            })
-        })
-
     });
 </script>
