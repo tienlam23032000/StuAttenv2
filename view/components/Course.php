@@ -154,7 +154,23 @@
         })
 
         $('#confirmDelete').on('click', function(event) {
-            
+            var id = $('#modalConfirm').find('.modal-body input[name=id]').val()
+            $.ajax({
+                url: 'controller/ajax.php?action=delete_course',
+                method: 'POST',
+                data: {
+                    id
+                },
+                success: function(resp) {
+                    if (resp == 1) {
+                        $('#modalConfirm').modal('toggle')
+                        alert_toast("Data successfully deleted", 'success', 5000)
+                        setTimeout(function() {
+                            location.reload()
+                        }, 1500)
+                    }
+                }
+            })
         })
 
         //Save
