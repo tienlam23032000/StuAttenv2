@@ -57,7 +57,6 @@ class Action
 					unset($_SESSION[$key]);
 				}
 				return 2;
-				exit;
 			}
 			return 1;
 		} else {
@@ -95,7 +94,6 @@ class Action
 		$chk = $this->db->query("Select * from users where username = '$username' and id !='$id' ")->num_rows;
 		if ($chk > 0) {
 			return 2;
-			exit;
 		}
 		if (empty($id)) {
 			$save = $this->db->query("INSERT INTO users set " . $data);
@@ -122,7 +120,6 @@ class Action
 		$chk = $this->db->query("SELECT * FROM users where username = '$email' ")->num_rows;
 		if ($chk > 0) {
 			return 2;
-			exit;
 		}
 		$save = $this->db->query("INSERT INTO users set " . $data);
 		if ($save) {
@@ -161,7 +158,6 @@ class Action
 		$chk = $this->db->query("SELECT * FROM users where username = '$email' and id != '{$_SESSION['login_id']}' ")->num_rows;
 		if ($chk > 0) {
 			return 2;
-			exit;
 		}
 		$save = $this->db->query("UPDATE users set $data where id = '{$_SESSION['login_id']}' ");
 		if ($save) {
@@ -241,7 +237,6 @@ class Action
 		if ($check) {
 			if ($check->num_rows > 0) {
 				return 2;
-				exit;
 			}
 		}
 		if (empty($id)) {
@@ -281,7 +276,6 @@ class Action
 		if ($check) {
 			if ($check->num_rows > 0) {
 				return 2;
-				exit;
 			}
 		}
 		if (empty($id)) {
@@ -358,6 +352,17 @@ class Action
 			return 1;
 		}
 	}
+
+	function get_faculty()
+	{
+		$data = array();
+		$class = $this->db->query("SELECT * FROM `faculty`");
+		while ($row = $class->fetch_assoc()) {
+			$data['data'][] = $row;
+		}
+		return json_encode($data);
+	}
+
 	function save_faculty()
 	{
 		extract($_POST);
@@ -371,10 +376,9 @@ class Action
 				}
 			}
 		}
-		$check = $this->db->query("SELECT * FROM faculty where id_no ='$id_no' " . (!empty($id) ? " and id != {$id} " : ''))->num_rows;
-		if ($check > 0) {
+		$check = $this->db->query("SELECT * FROM faculty where id_no ='$id_no' " . (!empty($id) ? " and id != {$id} " : ''));
+		if ($check && $check->num_rows > 0) {
 			return 2;
-			exit;
 		}
 		if (empty($id)) {
 			$save = $this->db->query("INSERT INTO faculty set $data");
@@ -405,9 +409,36 @@ class Action
 			return 1;
 		}
 	}
+	function get_student()
+	{
+		$data = array();
+		$sql = "SELECT\n"
+			. "    `students`.*,\n"
+			. "    CONCAT(\n"
+			. "        `courses`.`course`,\n"
+			. "        \" \",\n"
+			. "        `class`.`level`,\n"
+			. "        \"-\",\n"
+			. "        `class`.`section`\n"
+			. "    ) AS class_name\n"
+			. "FROM\n"
+			. "    `students`\n"
+			. "JOIN `class` ON `students`.`class_id` = `class`.`id`\n"
+			. "JOIN `courses` ON `class`.`course_id` = `courses`.`id`;";
+
+		$students = $this->db->query($sql);
+		while ($row = $students->fetch_assoc()) {
+			$data['data'][] = $row;
+		}
+		return json_encode($data);
+	}
+
 	function save_student()
 	{
 		extract($_POST);
+		if (empty($class_id)) {
+			return 3;
+		}
 		$data = "";
 		foreach ($_POST as $k => $v) {
 			if (!in_array($k, array('id')) && !is_numeric($k)) {
@@ -418,10 +449,9 @@ class Action
 				}
 			}
 		}
-		$check = $this->db->query("SELECT * FROM students where id_no ='$id_no' " . (!empty($id) ? " and id != {$id} " : ''))->num_rows;
-		if ($check > 0) {
+		$check = $this->db->query("SELECT * FROM students where id_no ='$id_no' " . (!empty($id) ? " and id != {$id} " : ''));
+		if ($check && $check->num_rows > 0) {
 			return 2;
-			exit;
 		}
 		if (empty($id)) {
 			$save = $this->db->query("INSERT INTO students set $data");
@@ -460,7 +490,6 @@ class Action
 		$check = $this->db->query("SELECT * FROM class_subject where $data2 " . (!empty($id) ? " and id != {$id} " : ''))->num_rows;
 		if ($check > 0) {
 			return 2;
-			exit;
 		}
 		if (empty($id)) {
 			$save = $this->db->query("INSERT INTO class_subject set $data");
@@ -567,7 +596,6 @@ class Action
 		$check = $this->db->query("SELECT * FROM attendance_list where $data2 " . (!empty($id) ? " and id != {$id} " : ''))->num_rows;
 		if ($check > 0) {
 			return 2;
-			exit;
 		}
 		if (empty($id)) {
 
