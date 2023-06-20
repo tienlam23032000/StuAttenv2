@@ -25,3 +25,24 @@ function alert_toast($msg = "TEST", $bg = "success", $delay = 3000) {
     })
     .toast("show");
 }
+
+async function getDataCboxAsync(action, fieldId, fieldName, idCbox) {
+  await $.ajax({
+      url: `controller/ajax.php?action=${action}`,
+      cache: false,
+      contentType: false,
+      processData: false,
+      method: 'GET',
+      type: 'GET',
+      success: function(resp) {
+          let data = JSON.parse(resp)?.data
+          let html = '<option value="">Please select ...</option>'
+          if (data && data?.length > 0) {
+              data.forEach(element => {
+                  html += `<option value="${element[fieldId]}">${element[fieldName]}</option>`
+              });
+          }
+          $(idCbox).html(html)
+      }
+  })
+}

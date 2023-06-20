@@ -151,5 +151,10 @@ if($action == "get_student"){
 	if($save)
 		echo $save;
 }
+if($action == "get_class_subject"){
+	$save = $crud->get_class_subject();
+	if($save)
+		echo $save;
+}
 ob_end_flush();
 ?>

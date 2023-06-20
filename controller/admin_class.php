@@ -303,6 +303,13 @@ class Action
 			. "courses.course as course_name,\n"
 			. "class.level as class,\n"
 			. "class.section as subclass,\n"
+			. "    CONCAT(\n"
+			. "        `courses`.`course`,\n"
+			. "        \" \",\n"
+			. "        `class`.`level`,\n"
+			. "        \"-\",\n"
+			. "        `class`.`section`\n"
+			. "    ) AS class_name,\n"
 			. "class.status \n"
 			. "FROM `class` \n"
 			. "JOIN `courses` on class.course_id = courses.id;";
@@ -471,9 +478,49 @@ class Action
 			return 1;
 		}
 	}
+
+	function get_class_subject()
+	{
+		$data = array();
+		$sql = "SELECT\n"
+			. "    csb.id,\n"
+			. "    csb.class_id,\n"
+			. "    csb.subject_id,\n"
+			. "    csb.faculty_id,\n"
+			. "    CONCAT(cs.`course`, \" \",c.`level`, \"-\", c.`section`) AS class_name,\n"
+			. "    s.subject AS subject_name,\n"
+			. "    f.name AS faculty_name\n"
+			. "FROM\n"
+			. "    `class_subject` AS csb\n"
+			. "LEFT JOIN `class` c ON\n"
+			. "    c.`id` = csb.class_id\n"
+			. "LEFT JOIN `courses` cs ON\n"
+			. "    c.course_id = cs.id\n"
+			. "LEFT JOIN `subjects` s ON\n"
+			. "    s.id = csb.subject_id\n"
+			. "LEFT JOIN `faculty` f ON\n"
+			. "    f.id = csb.faculty_id;";
+
+		$students = $this->db->query($sql);
+		while ($row = $students->fetch_assoc()) {
+			$data['data'][] = $row;
+		}
+		return json_encode($data);
+	}
+
 	function save_class_subject()
 	{
 		extract($_POST);
+		if (empty($class_id)) {
+			return 3;
+		}
+		if (empty($subject_id)) {
+			return 4;
+		}
+		if (empty($faculty_id)) {
+			return 5;
+		}
+
 		$data = "";
 		$data2 = "";
 		foreach ($_POST as $k => $v) {
@@ -487,8 +534,8 @@ class Action
 				}
 			}
 		}
-		$check = $this->db->query("SELECT * FROM class_subject where $data2 " . (!empty($id) ? " and id != {$id} " : ''))->num_rows;
-		if ($check > 0) {
+		$check = $this->db->query("SELECT * FROM class_subject where $data2 " . (!empty($id) ? " and id != {$id} " : ''));
+		if ($check && $check->num_rows > 0) {
 			return 2;
 		}
 		if (empty($id)) {

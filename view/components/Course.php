@@ -118,7 +118,7 @@
                                 <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalForm" data-add='false' data-bind='${JSON.stringify(row)}'>
                                     Edit
                                 </button>
-                                <button class="btn btn-sm btn-danger delete_course" data-bs-toggle="modal" data-bs-target="#modalConfirm" data-id='${data}' type="button">
+                                <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#modalConfirm" data-id='${data}' type="button">
                                     Delete
                                 </button>
                             </div>
