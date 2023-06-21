@@ -23,21 +23,6 @@ if($action == 'delete_user'){
 	if($save)
 		echo $save;
 }
-if($action == 'signup'){
-	$save = $crud->signup();
-	if($save)
-		echo $save;
-}
-if($action == 'update_account'){
-	$save = $crud->update_account();
-	if($save)
-		echo $save;
-}
-if($action == "save_settings"){
-	$save = $crud->save_settings();
-	if($save)
-		echo $save;
-}
 if($action == "save_course"){
 	$save = $crud->save_course();
 	if($save)
@@ -156,5 +141,10 @@ if($action == "get_class_subject"){
 	if($save)
 		echo $save;
 }
+
+if($action == "get_user"){
+	$save = $crud->get_user();
+	if($save)
+		echo $save;
+}
 ob_end_flush();
-?>
