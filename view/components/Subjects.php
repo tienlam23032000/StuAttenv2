@@ -32,6 +32,10 @@
                                                         <input type="text" class="form-control" name="subject" id="subject" autocomplete="off">
                                                     </div>
                                                     <div class="col-12">
+                                                        <label for="time_subject" class="form-label">Time Subject (h)</label>
+                                                        <input type="number" min="1" max="300" class="form-control" name="time_subject" id="time_subject" autocomplete="off">
+                                                    </div>
+                                                    <div class="col-12">
                                                         <label for="description" class="form-label">Description</label>
                                                         <textarea class="form-control" name="description" id="description" cols="30" rows="4" autocomplete="off"></textarea>
                                                     </div>
@@ -52,6 +56,7 @@
                                 <tr>
                                     <th scope="col">#</th>
                                     <th scope="col">Subject</th>
+                                    <th scope="col">Time Subject</th>
                                     <th scope="col">Description</th>
                                     <th scope="col" class="text-center">Action</th>
                                 </tr>
@@ -106,6 +111,13 @@
                     className: 'dt-body-left'
                 },
                 {
+                    data: 'time_subject',
+                    className: 'dt-body-left',
+                    render: function(data, type, row) {
+                        return `${data}h`
+                    }
+                },
+                {
                     data: 'description',
                     className: 'dt-body-left'
                 },
@@ -139,6 +151,7 @@
             var title = button.data('add') ? 'Add Subject' : 'Edit Subject'
             modal.find('.modal-title').text(title)
             modal.find('.modal-body input[name=subject]').val(recipient?.subject)
+            modal.find('.modal-body input[name=time_subject]').val(recipient?.time_subject)
             modal.find('.modal-body textarea[name=description]').val(recipient?.description)
             modal.find('.modal-body input[name=id]').val(recipient?.id)
         })

@@ -71,7 +71,7 @@ class Action
 		if ($delete)
 			return 1;
 	}
-	
+
 	function get_course()
 	{
 		$data = array();
@@ -125,12 +125,11 @@ class Action
 	{
 		extract($_POST);
 		$data = " subject = '$subject' ";
+		$data .= ", time_subject = '$time_subject' ";
 		$data .= ", description = '$description' ";
 		$check = $this->db->query("SELECT * FROM subjects where subject = '$subject' " . (!empty($id) ? ' and id!=$id ' : ''));
-		if ($check) {
-			if ($check->num_rows > 0) {
-				return 2;
-			}
+		if ($check && $check->num_rows > 0) {
+			return 2;
 		}
 		if (empty($id)) {
 			$save = $this->db->query("INSERT INTO subjects set $data");
@@ -344,7 +343,8 @@ class Action
 			. "    csb.faculty_id,\n"
 			. "    CONCAT(cs.`course`, \" \",c.`level`, \"-\", c.`section`) AS class_name,\n"
 			. "    s.subject AS subject_name,\n"
-			. "    f.name AS faculty_name\n"
+			. "    f.name AS faculty_name\n,"
+			. "    CONCAT(cs.`course`, \" \",c.`level`, \"-\", c.`section`, \" \",s.`subject`, \" [\", f.name ,\"]\") AS class_subject_name\n"
 			. "FROM\n"
 			. "    `class_subject` AS csb\n"
 			. "LEFT JOIN `class` c ON\n"
