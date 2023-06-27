@@ -11,33 +11,29 @@
                                 <h5>Attendance List</h5>
                             </div>
 
-                            <div class="row d-flex card-header w-75 p-3">
+                            <div class="row card-header justify-content-end w-75 p-3">
                                 <div class="col-6">
                                     <label for="selectAttendance">Class per Subjects</label>
                                     <select id="selectAttendance" class="form-select">
                                     </select>
+                                    <label for="noteAttendance">Note</label>
+                                    <input id="noteAttendance" type="text" class="form-control pl-0">
                                 </div>
                                 <div class="col-3">
                                     <label for="dateAttendance">Date Attendance</label>
                                     <input id="dateAttendance" type="date" class="form-control pl-0">
-                                </div>
-                                <div class="col-3">
+
                                     <label for="timeAttendance">Time Attendance</label>
                                     <input id="timeAttendance" type="time" class="form-control pl-0">
                                 </div>
-                                <div class="col-8">
-                                    <!-- Blank Div -->
-                                </div>
                                 <div class="col-2">
                                     <label></label>
                                     <div class="d-grid gap-2">
-                                        <button type="button" name="" id="" class="btn btn-primary">Save</button>
+                                        <button id="saveAttendance" class="btn btn-primary">Save</button>
                                     </div>
-                                </div>
-                                <div class="col-2">
                                     <label></label>
                                     <div class="d-grid gap-2">
-                                        <button type="button" name="" id="" class="btn btn-primary">End Subject</button>
+                                        <button id="endSubject" class="btn btn-primary">End Subject</button>
                                     </div>
                                 </div>
                             </div>
@@ -69,80 +65,157 @@
         $('#timeAttendance').val(getCurrentTime())
         getDataCboxAsync('get_class_subject', 'id', 'class_subject_name', '#selectAttendance')
 
-        $('#selectAttendance').on('change', function(e) {
-            const selectedId = e.target.value
-            const formData = new FormData()
-            formData.append("class_subject_id", selectedId)
-            $('#tablePaging').DataTable().destroy()
-            $('#tablePaging').DataTable({
-                ajax: {
-                    url: 'controller/ajax.php?action=get_class_list',
-                    type: 'POST',
-                    data: {
-                        class_subject_id: selectedId,
-                    }
-                },
-                columns: [{
-                        data: 'id',
-                        className: 'dt-body-left',
-                        render: function(data, type, row, meta) {
-                            return meta.row + 1
-                        }
-                    },
-                    {
-                        data: 'name',
-                        className: 'dt-body-left'
-                    },
-                    {
-                        data: 'id',
-                        className: 'dt-body-center',
-                        render: function(data, type, row) {
-                            return `
-                            <div>
-                                <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalForm" data-add='false' data-bind='${JSON.stringify(row)}'>
-                                    Edit
-                                </button>
-                                <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#modalConfirm" data-id='${data}' type="button">
-                                    Delete
-                                </button>
-                            </div>
-                        `
-                        }
-                    }
-                ],
-                columnDefs: [{
-                    targets: -1,
-                    className: 'dt-body-center'
-                }]
-            });
-        })
+        $('#selectAttendance').on('change', async function(e) {
+            window.selectedId = e.target.value
 
-
-
-        //Save
-        $('#form').submit(function(e) {
-            e.preventDefault()
-            $.ajax({
-                url: 'controller/ajax.php?action=save_course',
-                data: new FormData($(this)[0]),
-                cache: false,
-                contentType: false,
-                processData: false,
-                method: 'POST',
+            await $.ajax({
+                url: 'controller/ajax.php?action=get_class_list',
                 type: 'POST',
+                data: {
+                    class_subject_id: window.selectedId,
+                },
                 success: function(resp) {
-                    if (resp == 1) {
-                        $('#msg').html('')
-                        $('#modalForm').modal('toggle')
-                        alert_toast("Data successfully saved", 'success', 5000)
-                        setTimeout(function() {
-                            location.reload()
-                        }, 1500)
-                    } else if (resp == 2) {
-                        $('#msg').html('<div class="alert alert-danger mx-2">Course already exist.</div>')
+                    window.listAttendance = JSON.parse(resp)?.data ?? {
+                        data: []
                     }
+                    $('#tablePaging').DataTable().destroy()
+                    $('#tablePaging').DataTable({
+                        data: window.listAttendance,
+                        columns: [{
+                                data: 'id',
+                                className: 'dt-body-left',
+                                render: function(data, type, row, meta) {
+                                    return meta.row + 1
+                                }
+                            },
+                            {
+                                data: 'name',
+                                className: 'dt-body-left'
+                            },
+                            {
+                                data: 'id',
+                                className: 'dt-body-center',
+                                render: function(data, type, row) {
+                                    return `
+                                <div class="d-flex justify-content-center" id="attendanceLst-${data}">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input present-inp" name="attendance-${data}" type="radio" value="1">
+                                        <label class="form-check-label present-lbl">Present</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input absent-inp" name="attendance-${data}" type="radio" value="0">
+                                        <label class="form-check-label absent-lbl">Absent</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input late-inp" name="attendance-${data}" type="radio" value="2">
+                                        <label class="form-check-label late-lbl">Late</label>
+                                    </div>
+                                </div>
+                            `
+                                }
+                            }
+                        ],
+                        columnDefs: [{
+                            targets: -1,
+                            className: 'dt-body-center'
+                        }]
+                    });
                 }
             })
+            await changeDate();
         })
+
+        $('#saveAttendance').on('click', function(e) {
+            const dateDOC = $('#dateAttendance').val()
+            const jsonBody = {
+                id: 0,
+                doc: dateDOC,
+                start_time: $('#timeAttendance').val(),
+                end_time: null,
+                note: $('#noteAttendance').val(),
+                class_subject_id: window.selectedId,
+                type: window.listAttendance.map(x => $(`#attendanceLst-${x.id} input[name=attendance-${x.id}]:checked`).val()),
+                student_id: window.listAttendance.map(x => x.id)
+            }
+
+            $.ajax({
+                url: 'controller/ajax.php?action=save_attendance',
+                data: {
+                    json: JSON.stringify(jsonBody)
+                },
+                method: 'POST',
+                success: function(resp) {
+                    var msg = resp == 1 ? 'updated' : 'inserted'
+                    alert_toast(`Data successfully ${msg}`, 'success', 5000)
+                },
+                error: function(err) {
+                    alert_toast(`Fail saved`, 'danger', 5000)
+                    console.error(err)
+                }
+            })
+
+        })
+
+        $('#endSubject').on('click', function(e) {
+            
+        })
+
+        $('#dateAttendance').on('change', function(e) {
+            changeDate()
+        })
+
+
+        async function changeDate() {
+            await $.ajax({
+                url: 'controller/ajax.php?action=get_edit_class_list',
+                type: 'POST',
+                data: {
+                    class_subject_id: window.selectedId,
+                    date_attendance: $('#dateAttendance').val()
+                },
+                success: function(data) {
+                    const dataPaser = JSON.parse(data)
+
+                    if (!dataPaser.success) {
+                        $('#timeAttendance').val(getCurrentTime())
+                        $('#noteAttendance').val('')
+                        $("#timeAttendance").prop('disabled', false);
+                        $('#endSubject').prop('disabled', false);
+                        eventAttenList(false, false)
+                        return
+                    }
+
+                    $('#endSubject').prop('disabled', false);
+                    eventAttenList(false, 1)
+                    if (dataPaser.endTime != '00:00:00') {
+                        $('#endSubject').prop('disabled', true);
+                        eventAttenList(true, 1)
+                    }
+
+                    $('#timeAttendance').val(dataPaser.startTime)
+                    $("#timeAttendance").prop('disabled', true);
+                    $('#noteAttendance').val(dataPaser.note)
+
+                    dataPaser?.listType.forEach(itemType => {
+                        $(`#attendanceLst-${itemType.student_id} input[name=attendance-${itemType.student_id}]`).each(
+                            function(index) {
+                                $(this).filter(`[value=${itemType.type}]`).prop('checked', true)
+                            })
+                    })
+
+                }
+            })
+        }
+
+        function eventAttenList(disable, checked) {
+            window.listAttendance.forEach(item => {
+                $(`#attendanceLst-${item.id} input[name=attendance-${item.id}]`).each(
+                    function(index) {
+                        $(this).prop('disabled', disable);
+                        $(this).prop('checked', checked)
+                    }
+                )
+            })
+        }
     });
 </script>

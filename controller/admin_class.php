@@ -440,6 +440,46 @@ class Action
 		}
 		return json_encode($data);
 	}
+
+	function get_edit_class_list()
+	{
+		extract($_POST);
+		$RESULT = new stdClass();
+		$QUERY = "SELECT * FROM `attendance_list` \n"
+			. "WHERE `doc` = '$date_attendance' AND `class_subject_id` = '$class_subject_id' LIMIT 1;";
+		$LIST = $this->db->query($QUERY);
+
+		if ($LIST && $LIST->num_rows > 0) {
+			while ($ROW = $LIST->fetch_array()) {
+				$ATTENDANCE_ID = $ROW['id'];
+				$RESULT->note = $ROW['note'];
+				$RESULT->startTime = $ROW['start_time'];
+				$RESULT->endTime = $ROW['end_time'];
+			}
+		}
+
+		if (empty($ATTENDANCE_ID)) {
+			$RESULT->success = false;
+			return json_encode($RESULT);
+		}
+
+		$LIST_TYPE = [];
+		$QUERY_RECORD = "SELECT * FROM `attendance_record` WHERE `attendance_id` = '$ATTENDANCE_ID';";
+		$LIST_RECORD = $this->db->query($QUERY_RECORD);
+		if ($LIST_RECORD && $LIST_RECORD->num_rows > 0) {
+			while ($ROW = $LIST_RECORD->fetch_array()) {
+				$ROW_DATA = new stdClass();
+				$ROW_DATA->type = $ROW['type'];
+				$ROW_DATA->student_id = $ROW['student_id'];
+				array_push($LIST_TYPE, $ROW_DATA);
+			}
+		}
+		$RESULT->listType = $LIST_TYPE;
+		$RESULT->success = true;
+
+		return json_encode($RESULT);
+	}
+
 	function get_att_record()
 	{
 		extract($_POST);
@@ -499,41 +539,49 @@ class Action
 	}
 	function save_attendance()
 	{
-		extract($_POST);
-		$data  = " class_subject_id = '$class_subject_id' ";
-		$data .= ", doc = '$doc' ";
-		$data2  = " class_subject_id = '$class_subject_id' ";
-		$data2 .= "and doc = '$doc' ";
-		// echo "SELECT * FROM attendance_list where $data2 ".(!empty($id) ? " and attendance_id != {$id} " : '');
-		$check = $this->db->query("SELECT * FROM attendance_list where $data2 " . (!empty($id) ? " and id != {$id} " : ''))->num_rows;
-		if ($check > 0) {
-			return 2;
-		}
-		if (empty($id)) {
+		extract(json_decode($_POST['json'], TRUE));
 
-			$save = $this->db->query("INSERT INTO attendance_list set $data ");
-			if ($save) {
-				$id = $this->db->insert_id;
-				foreach ($student_id as $k => $v) {
-					$data = " attendance_id = '$id' ";
-					$data .= ", student_id = '$k' ";
-					$data .= ", type = '$type[$k]' ";
-					$this->db->query("INSERT INTO attendance_record set $data ");
-				}
-			}
-		} else {
-			$save = $this->db->query("UPDATE attendance_list set $data where id=$id ");
-			if ($save) {
-				foreach ($student_id as $k => $v) {
-					$data = " attendance_id = '$id' ";
-					$data .= "and student_id = '$k' ";
-					$this->db->query("UPDATE attendance_record set type = '$type[$k]' where $data ");
-				}
-			}
-		}
+		$QUERY_CHECK = "SELECT `id` FROM `attendance_list` WHERE `doc` = '$doc' AND `class_subject_id` = '$class_subject_id' ";
+		$QUERY_CHECK .= (isset($id) && $id != 0 ? "AND `id` = '$id' " : "");
+		$CHECK = $this->db->query($QUERY_CHECK);
 
-		if ($save) {
-			return 1;
+		// Nếu trong bảng attendance_list đã có bản ghi (> 0)
+		/*
+			Chỉ cập nhật lại type trong bảng attendance_record 
+		*/
+		if ($CHECK && $CHECK->num_rows > 0) {
+			$attendance_list = $CHECK->fetch_array();
+			$SUCCESS = $this->db->query("UPDATE `attendance_list` SET `note` = '$note' WHERE `id` = '$attendance_list[id]' ");
+
+			foreach ($student_id as $key => $value) {
+				$QUERY = "UPDATE attendance_record SET `type` = '$type[$key]' WHERE ";
+				$QUERY .= " attendance_id = '$attendance_list[id]' ";
+				$QUERY .= "and student_id = '$value' ";
+				$this->db->query($QUERY);
+			}
+			return 1; //UPDATE
+		}
+		// Nếu trong bảng attendance_list chưa có bản ghi (< 0)
+		/*
+			Thêm mới 1 bản ghi vào bảng attendance_list
+			Thêm mới điểm danh vào bảng attendance_record theo id của attendance_list vừa thêm mới
+		*/
+		$QUERY_SAVE  = " class_subject_id = '$class_subject_id' ";
+		$QUERY_SAVE .= ", doc = '$doc' ";
+		$QUERY_SAVE .= ", start_time = '$start_time' ";
+		$QUERY_SAVE .= ", note = '$note' ";
+
+		$SUCCESS = $this->db->query("INSERT INTO `attendance_list` SET $QUERY_SAVE");
+		if ($SUCCESS) {
+			$attendance_list_id = $this->db->insert_id;
+			foreach ($student_id as $key => $value) {
+				$QUERY = "INSERT INTO `attendance_record` SET";
+				$QUERY .= " attendance_id = '$attendance_list_id' ";
+				$QUERY .= ", student_id = '$value' ";
+				$QUERY .= ", type = '$type[$key]' ";
+				$this->db->query($QUERY);
+			}
+			return 2; //INSERT
 		}
 	}
 

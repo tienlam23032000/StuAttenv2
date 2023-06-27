@@ -147,4 +147,10 @@ if($action == "get_user"){
 	if($save)
 		echo $save;
 }
+
+if($action == "get_edit_class_list"){
+	$save = $crud->get_edit_class_list();
+	if($save)
+		echo $save;
+}
 ob_end_flush();
