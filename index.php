@@ -9,6 +9,7 @@ if (!isset($_SESSION['login_id'])) {
 include './view/auth/Rule.php';
 if (!isset($_GET['page'])) {
     $arrayRule = $_SESSION['login_type'] == 1 ? $adminRule : $staffRule;
+    $arrayIcon = $_SESSION['login_type'] == 1 ? $adminIcon : $staffIcon;
     header("Refresh:0; url=index.php?page=" . array_key_first($arrayRule));
     return;
 }
@@ -18,6 +19,7 @@ $global = new stdClass();
 $global->nameUser = $_SESSION['login_name'];
 $global->typeUser = $_SESSION['login_type'];
 $global->arrayRule = $global->typeUser == 1 ? $adminRule : $staffRule;
+$global->arrayIcon = $global->typeUser == 1 ? $adminIcon : $staffIcon;
 $global->thisPage = $_GET['page'];
 
 $variable = new stdClass();

@@ -8,11 +8,11 @@
 <header id="header" class="header fixed-top d-flex align-items-center">
 
     <div class="d-flex align-items-center justify-content-between">
-        <a href="index.html" class="logo d-flex align-items-center">
+        <a href="index.php" class="logo d-flex align-items-center">
             <img src="assets/img/main-icon.png" alt="">
             <span class="d-none d-lg-block">Student Attendance</span>
         </a>
-        <i class="bi bi-list toggle-sidebar-btn"></i>
+        <!-- <i class="bi bi-list toggle-sidebar-btn"></i> -->
     </div><!-- End Logo -->
 
 
@@ -49,12 +49,13 @@
 <aside id="sidebar" class="sidebar">
     <ul class="sidebar-nav" id="sidebar-nav">
         <?php
-        foreach ($global->arrayRule as $key => $value) :
+        
+        foreach ($global->arrayRule as $keyRule => $valueRule) :
         ?>
             <li class="nav-item">
-                <a class="nav-link collapsed" id="<?= $key; ?>" href="index.php?page=<?= $key; ?>">
-                    <i class="bi bi-grid"></i>
-                    <span><?= $value; ?></span>
+                <a class="nav-link collapsed" id="<?= $keyRule; ?>" href="index.php?page=<?= $keyRule; ?>">
+                    <i class="<?php echo $global->arrayIcon[$keyRule]; ?>"></i>
+                    <span><?= $valueRule; ?></span>
                 </a>
             </li>
         <?php endforeach; ?>
