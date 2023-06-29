@@ -42,6 +42,10 @@
                                                         <select name="faculty_id" id="faculty_selected" class="form-select">
                                                         </select>
                                                     </div>
+                                                    <div class="col-12">
+                                                        <label for="time_remaining" class="form-label">Time Remaining</label>
+                                                        <input type="text" class="form-control disable" name="time_remaining" id="time_remaining" autocomplete="off" >
+                                                    </div>
                                                 </form>
                                             </div>
                                             <div class="modal-footer">
@@ -61,6 +65,7 @@
                                     <th scope="col">Full Name Class</th>
                                     <th scope="col">Subject</th>
                                     <th scope="col">Faculty</th>
+                                    <th scope="col">Time Remaining</th>
                                     <th scope="col" class="text-center">Action</th>
                                 </tr>
                             </thead>
@@ -96,10 +101,9 @@
 
 <script>
     $(document).ready(function() {
-
-        getDataCboxAsync('get_class','id','class_name','#class_selected')
-        getDataCboxAsync('get_subject','id','subject','#subject_selected')
-        getDataCboxAsync('get_faculty','id','name','#faculty_selected')
+        getDataCboxAsync('get_class', 'id', 'class_name', '#class_selected')
+        getDataCboxAsync('get_subject', 'id', 'subject', '#subject_selected')
+        getDataCboxAsync('get_faculty', 'id', 'name', '#faculty_selected')
 
         $('#tablePaging').DataTable({
             ajax: 'controller/ajax.php?action=get_class_subject',
@@ -121,6 +125,10 @@
                 {
                     data: 'faculty_name',
                     className: 'dt-body-left'
+                },
+                {
+                    data: 'time_remaining',
+                    className: 'dt-body-right'
                 },
                 {
                     data: 'id',
@@ -154,6 +162,7 @@
             modal.find('.modal-body select[name=class_id]').val(recipient?.class_id)
             modal.find('.modal-body select[name=subject_id]').val(recipient?.subject_id)
             modal.find('.modal-body select[name=faculty_id]').val(recipient?.faculty_id)
+            modal.find('.modal-body input[name=time_remaining]').val(recipient?.time_remaining)
             modal.find('.modal-body input[name=id]').val(recipient?.id)
         })
 
@@ -180,6 +189,21 @@
                             location.reload()
                         }, 1500)
                     }
+                }
+            })
+        })
+
+        $('#subject_selected').on('change', function(event) {
+            const id = event.target.value
+            $.ajax({
+                url: `controller/ajax.php?action=get_time_remaining_subject`,
+                type: 'POST',
+                data: {
+                    id: id
+                },
+                success: function(data) {
+                    const paserData = JSON.parse(data)
+                    $('#modalForm').find('.modal-body input[name=time_remaining]').val(paserData?.time_subject)
                 }
             })
         })
@@ -217,5 +241,6 @@
                 }
             })
         })
+
     });
 </script>

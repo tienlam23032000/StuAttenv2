@@ -341,10 +341,28 @@ class Action
 			. "    csb.class_id,\n"
 			. "    csb.subject_id,\n"
 			. "    csb.faculty_id,\n"
-			. "    CONCAT(cs.`course`, \" \",c.`level`, \"-\", c.`section`) AS class_name,\n"
+			. "    csb.time_remaining,\n"
+			. "    CONCAT(\n"
+			. "        cs.`course`,\n"
+			. "        \" \",\n"
+			. "        c.`level`,\n"
+			. "        \"-\",\n"
+			. "        c.`section`\n"
+			. "    ) AS class_name,\n"
 			. "    s.subject AS subject_name,\n"
-			. "    f.name AS faculty_name\n,"
-			. "    CONCAT(cs.`course`, \" \",c.`level`, \"-\", c.`section`, \" \",s.`subject`, \" [\", f.name ,\"]\") AS class_subject_name\n"
+			. "    f.name AS faculty_name,\n"
+			. "    CONCAT(\n"
+			. "        cs.`course`,\n"
+			. "        \" \",\n"
+			. "        c.`level`,\n"
+			. "        \"-\",\n"
+			. "        c.`section`,\n"
+			. "        \" \",\n"
+			. "        s.`subject`,\n"
+			. "        \" [\",\n"
+			. "        f.name,\n"
+			. "        \"]\"\n"
+			. "    ) AS class_subject_name\n"
 			. "FROM\n"
 			. "    `class_subject` AS csb\n"
 			. "LEFT JOIN `class` c ON\n"
@@ -619,5 +637,19 @@ class Action
 		$object->countVaild = $countVaild;
 		// $object->listValid = $listValid;
 		return json_encode($object);
+	}
+
+	function get_time_remaining_subject()
+	{
+		extract($_POST);
+		$RESULT = new stdClass();
+		$QUERY = "SELECT `time_subject` FROM  `subjects` WHERE `id` = '$id' LIMIT 1";
+		$RAWDATA = $this->db->query($QUERY);
+		if ($RAWDATA) {
+			while ($ROW = $RAWDATA->fetch_assoc()) {
+				$RESULT = $ROW;
+			}
+		}
+		return json_encode($RESULT);
 	}
 }

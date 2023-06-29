@@ -67,7 +67,6 @@
 
         $('#selectAttendance').on('change', async function(e) {
             window.selectedId = e.target.value
-
             await $.ajax({
                 url: 'controller/ajax.php?action=get_class_list',
                 type: 'POST',

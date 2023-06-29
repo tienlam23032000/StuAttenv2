@@ -3,154 +3,169 @@ ob_start();
 $action = $_GET['action'];
 include 'admin_class.php';
 $crud = new Action();
-if($action == 'login'){
+if ($action == 'login') {
 	$login = $crud->login();
-	if($login)
+	if ($login)
 		echo $login;
 }
 
-if($action == 'logout'){
+if ($action == 'logout') {
 	$crud->logout();
 }
 
-if($action == 'save_user'){
+if ($action == 'save_user') {
 	$save = $crud->save_user();
-	if($save)
+	if ($save)
 		echo $save;
 }
-if($action == 'delete_user'){
+if ($action == 'delete_user') {
 	$save = $crud->delete_user();
-	if($save)
+	if ($save)
 		echo $save;
 }
-if($action == "save_course"){
+if ($action == "save_course") {
 	$save = $crud->save_course();
-	if($save)
+	if ($save)
 		echo $save;
 }
 
-if($action == "delete_course"){
+if ($action == "delete_course") {
 	$delete = $crud->delete_course();
-	if($delete)
+	if ($delete)
 		echo $delete;
 }
-if($action == "save_subject"){
+if ($action == "save_subject") {
 	$save = $crud->save_subject();
-	if($save)
+	if ($save)
 		echo $save;
 }
-if($action == "delete_subject"){
+if ($action == "delete_subject") {
 	$save = $crud->delete_subject();
-	if($save)
+	if ($save)
 		echo $save;
 }
 
-if($action == "save_class"){
+if ($action == "save_class") {
 	$save = $crud->save_class();
-	if($save)
+	if ($save)
 		echo $save;
 }
-if($action == "delete_class"){
+if ($action == "delete_class") {
 	$save = $crud->delete_class();
-	if($save)
+	if ($save)
 		echo $save;
 }
-if($action == "save_faculty"){
+if ($action == "save_faculty") {
 	$save = $crud->save_faculty();
-	if($save)
+	if ($save)
 		echo $save;
 }
-if($action == "delete_faculty"){
+if ($action == "delete_faculty") {
 	$save = $crud->delete_faculty();
-	if($save)
+	if ($save)
 		echo $save;
 }
 
-if($action == "save_student"){
+if ($action == "save_student") {
 	$save = $crud->save_student();
-	if($save)
+	if ($save)
 		echo $save;
 }
-if($action == "delete_student"){
+if ($action == "delete_student") {
 	$save = $crud->delete_student();
-	if($save)
+	if ($save)
 		echo $save;
 }
-if($action == "save_class_subject"){
+if ($action == "save_class_subject") {
 	$save = $crud->save_class_subject();
-	if($save)
+	if ($save)
 		echo $save;
 }
-if($action == "delete_class_subject"){
+if ($action == "delete_class_subject") {
 	$save = $crud->delete_class_subject();
-	if($save)
+	if ($save)
 		echo $save;
 }
-if($action == "get_class_list"){
+if ($action == "get_class_list") {
 	$get = $crud->get_class_list();
-	if($get)
+	if ($get)
 		echo $get;
 }
-if($action == "get_att_record"){
+if ($action == "get_att_record") {
 	$get = $crud->get_att_record();
-	if($get)
+	if ($get)
 		echo $get;
 }
-if($action == "get_att_report"){
+if ($action == "get_att_report") {
 	$get = $crud->get_att_report();
-	if($get)
+	if ($get)
 		echo $get;
 }
-if($action == "save_attendance"){
+if ($action == "save_attendance") {
 	$save = $crud->save_attendance();
-	if($save)
+	if ($save)
 		echo $save;
 }
-if($action == "import_excel"){
+if ($action == "import_excel") {
 	$save = $crud->import_excel();
-	if($save)
+	if ($save)
 		echo $save;
 }
-if($action == "get_course"){
+if ($action == "get_course") {
 	$save = $crud->get_course();
-	if($save)
+	if ($save)
 		echo $save;
 }
-if($action == "get_subject"){
+if ($action == "get_subject") {
 	$save = $crud->get_subject();
-	if($save)
+	if ($save)
 		echo $save;
 }
-if($action == "get_class"){
+if ($action == "get_class") {
 	$save = $crud->get_class();
-	if($save)
+	if ($save)
 		echo $save;
 }
-if($action == "get_faculty"){
+if ($action == "get_faculty") {
 	$save = $crud->get_faculty();
-	if($save)
+	if ($save)
 		echo $save;
 }
-if($action == "get_student"){
+if ($action == "get_student") {
 	$save = $crud->get_student();
-	if($save)
-		echo $save;
-}
-if($action == "get_class_subject"){
-	$save = $crud->get_class_subject();
-	if($save)
+	if ($save)
 		echo $save;
 }
 
-if($action == "get_user"){
+if ($action == "get_class_subject") {
+	$get = $crud->get_class_subject();
+	if ($get)
+		echo $get;
+}
+
+if ($action == "get_user") {
 	$save = $crud->get_user();
-	if($save)
+	if ($save)
 		echo $save;
 }
 
-if($action == "get_edit_class_list"){
+if ($action == "get_edit_class_list") {
 	$save = $crud->get_edit_class_list();
-	if($save)
+	if ($save)
 		echo $save;
 }
+
+if ($action == "get_edit_class_list") {
+	$save = $crud->get_edit_class_list();
+	if ($save)
+		echo $save;
+}
+
+if ($action == "get_time_remaining_subject") {
+	$save = $crud->get_time_remaining_subject();
+	if ($save)
+		echo $save;
+}
+
+
 ob_end_flush();
