@@ -155,17 +155,16 @@ if ($action == "get_edit_class_list") {
 		echo $save;
 }
 
-if ($action == "get_edit_class_list") {
-	$save = $crud->get_edit_class_list();
-	if ($save)
-		echo $save;
-}
-
 if ($action == "get_time_remaining_subject") {
 	$save = $crud->get_time_remaining_subject();
 	if ($save)
 		echo $save;
 }
 
+if ($action == "end_subject") {
+	$save = $crud->end_subject();
+	if ($save)
+		echo $save;
+}
 
 ob_end_flush();

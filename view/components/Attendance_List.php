@@ -156,7 +156,26 @@
         })
 
         $('#endSubject').on('click', function(e) {
-            
+            const startTime = $('#timeAttendance').val()
+            const endTime = getCurrentTime()
+            const timeRemaining = calcTimeToHour(startTime, endTime)
+
+            $.ajax({
+                url: 'controller/ajax.php?action=end_subject',
+                type: 'POST',
+                data: {
+                    json: JSON.stringify({
+                        endTime: endTime,
+                        timeRemaining: timeRemaining,
+                        class_subject_id: window.selectedId,
+                        attendance_id: window.attendance_id
+                    })
+                },
+                success: function(data) {
+
+                }
+            })
+
         })
 
         $('#dateAttendance').on('change', function(e) {
@@ -174,7 +193,7 @@
                 },
                 success: function(data) {
                     const dataPaser = JSON.parse(data)
-
+                    window.attendance_id = dataPaser?.attendance_id
                     if (!dataPaser.success) {
                         $('#timeAttendance').val(getCurrentTime())
                         $('#noteAttendance').val('')

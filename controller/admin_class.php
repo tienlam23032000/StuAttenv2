@@ -470,6 +470,7 @@ class Action
 		if ($LIST && $LIST->num_rows > 0) {
 			while ($ROW = $LIST->fetch_array()) {
 				$ATTENDANCE_ID = $ROW['id'];
+				$RESULT->attendance_id = $ROW['id'];
 				$RESULT->note = $ROW['note'];
 				$RESULT->startTime = $ROW['start_time'];
 				$RESULT->endTime = $ROW['end_time'];
@@ -481,7 +482,7 @@ class Action
 			return json_encode($RESULT);
 		}
 
-		$LIST_TYPE = [];
+		$LIST_TYPE = array();
 		$QUERY_RECORD = "SELECT * FROM `attendance_record` WHERE `attendance_id` = '$ATTENDANCE_ID';";
 		$LIST_RECORD = $this->db->query($QUERY_RECORD);
 		if ($LIST_RECORD && $LIST_RECORD->num_rows > 0) {
@@ -651,5 +652,25 @@ class Action
 			}
 		}
 		return json_encode($RESULT);
+	}
+
+	function end_subject()
+	{
+		try {
+			extract(json_decode($_POST['json'], TRUE));
+
+			// Update End Time 
+			$QUERY_ENDTIME = "UPDATE `attendance_list` SET `end_time`='$endTime' WHERE `id` = '$attendance_id';";
+			$this->db->query($QUERY_ENDTIME);
+
+			// Update Time Remaining
+			$QUERY_TIME = "UPDATE `class_subject` SET"
+				. " `time_remaining` = `time_remaining` - '$timeRemaining'\n"
+				. " WHERE class_subject.id = '$class_subject_id';";
+			$this->db->query($QUERY_TIME);
+			return 1;
+		} catch (\Throwable $th) {
+			return 3;
+		}
 	}
 }

@@ -60,6 +60,31 @@ function getCurrentTime() {
   var today = new Date();
   var hour = String(today.getHours()).padStart(2, "0");
   var min = String(today.getMinutes()).padStart(2, "0");
-  var formattedTime = hour + ":" + min;
+  var second = String(today.getSeconds()).padStart(2, "0");
+  var formattedTime = hour + ":" + min + ":" + second;
   return formattedTime;
+}
+
+function calcTimeToHour(startTime, endTime) {
+  // Chuyển đổi thời gian bắt đầu thành giờ và phút
+  var [startHour, startMinute] = startTime.split(":");
+  var startHourInt = parseInt(startHour);
+  var startMinuteInt = parseInt(startMinute);
+
+  // Chuyển đổi thời gian kết thúc thành giờ và phút
+  var [endHour, endMinute] = endTime.split(":");
+  var endHourInt = parseInt(endHour);
+  var endMinuteInt = parseInt(endMinute);
+
+  // Tính toán số giờ
+  var totalHours = endHourInt - startHourInt;
+  var totalMinutes = endMinuteInt - startMinuteInt;
+  if (totalMinutes < 0) {
+    totalHours -= 1;
+    totalMinutes += 60;
+  }
+
+  // Định dạng kết quả
+  var result = totalHours.toString() + "." + totalMinutes.toString();
+  return result;
 }
