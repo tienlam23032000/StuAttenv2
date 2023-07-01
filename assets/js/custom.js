@@ -66,6 +66,7 @@ function getCurrentTime() {
 }
 
 function calcTimeToHour(startTime, endTime) {
+  // 14:00 15:45
   // Chuyển đổi thời gian bắt đầu thành giờ và phút
   var [startHour, startMinute] = startTime.split(":");
   var startHourInt = parseInt(startHour);
@@ -78,13 +79,16 @@ function calcTimeToHour(startTime, endTime) {
 
   // Tính toán số giờ
   var totalHours = endHourInt - startHourInt;
-  var totalMinutes = endMinuteInt - startMinuteInt;
+  var totalMinutes = (endMinuteInt / 60) - (startMinuteInt / 60);
   if (totalMinutes < 0) {
     totalHours -= 1;
     totalMinutes += 60;
   }
-
+  if(totalMinutes < 1){
+    return parseFloat(totalMinutes.toString()).toFixed(2).toString();
+  }
   // Định dạng kết quả
-  var result = totalHours.toString() + "." + totalMinutes.toString();
+  var result = totalHours.toString() + "." + parseFloat(totalMinutes.toString()).toFixed(2).toString();
+
   return result;
 }

@@ -9,6 +9,7 @@
                         <div class="d-flex justify-content-between">
                             <div class="card-title">
                                 <h5>Attendance List</h5>
+                                <h6 id="viewTimeRemaining">Time Remaining: 0h</h6>
                             </div>
 
                             <div class="row card-header justify-content-end w-75 p-3">
@@ -24,7 +25,7 @@
                                     <input id="dateAttendance" type="date" class="form-control pl-0">
 
                                     <label for="timeAttendance">Time Attendance</label>
-                                    <input id="timeAttendance" type="time" class="form-control pl-0">
+                                    <input id="timeAttendance" type="time" class="form-control pl-0" disabled>
                                 </div>
                                 <div class="col-2">
                                     <label></label>
@@ -63,7 +64,12 @@
         // FillData 
         $('#dateAttendance').val(getCurrentDate())
         $('#timeAttendance').val(getCurrentTime())
+        $('#dateAttendance').prop('max', getCurrentDate())
         getDataCboxAsync('get_class_subject', 'id', 'class_subject_name', '#selectAttendance')
+
+        // let realTime = setInterval(function() {
+        //     $('#timeAttendance').val(getCurrentTime())
+        // }, 999);
 
         $('#selectAttendance').on('change', async function(e) {
             window.selectedId = e.target.value
@@ -77,6 +83,8 @@
                     window.listAttendance = JSON.parse(resp)?.data ?? {
                         data: []
                     }
+                    const timeRemaining = JSON.parse(resp)?.time_remaining ?? 0
+                    $('#viewTimeRemaining').html(`Time Remaining: ${parseFloat(timeRemaining).toFixed(2)}`)
                     $('#tablePaging').DataTable().destroy()
                     $('#tablePaging').DataTable({
                         data: window.listAttendance,
@@ -145,6 +153,7 @@
                 method: 'POST',
                 success: function(resp) {
                     var msg = resp == 1 ? 'updated' : 'inserted'
+                    $("#timeAttendance").prop('disabled', true);
                     alert_toast(`Data successfully ${msg}`, 'success', 5000)
                 },
                 error: function(err) {
@@ -172,7 +181,10 @@
                     })
                 },
                 success: function(data) {
-
+                    $("#endSubject").prop('disabled', true);
+                    $("#saveAttendance").prop('disabled', true);
+                    eventAttenList(true, false)
+                    alert_toast(`End subject successfully`, 'success', 5000)
                 }
             })
 
@@ -197,21 +209,27 @@
                     if (!dataPaser.success) {
                         $('#timeAttendance').val(getCurrentTime())
                         $('#noteAttendance').val('')
-                        $("#timeAttendance").prop('disabled', false);
+                        // $("#timeAttendance").prop('disabled', false);
                         $('#endSubject').prop('disabled', false);
-                        eventAttenList(false, false)
+                        $("#saveAttendance").prop('disabled', false);
+                        eventAttenList(false, false, true)
+                        // realTime = setInterval(function() {
+                        //     $('#timeAttendance').val(getCurrentTime())
+                        // }, 999);
                         return
                     }
-
+                    // clearInterval(realTime);
                     $('#endSubject').prop('disabled', false);
                     eventAttenList(false, 1)
                     if (dataPaser.endTime != '00:00:00') {
                         $('#endSubject').prop('disabled', true);
+                        $("#saveAttendance").prop('disabled', true);
                         eventAttenList(true, 1)
+                    } else {
+                        $("#saveAttendance").prop('disabled', false);
                     }
-
                     $('#timeAttendance').val(dataPaser.startTime)
-                    $("#timeAttendance").prop('disabled', true);
+                    // $("#timeAttendance").prop('disabled', true);
                     $('#noteAttendance').val(dataPaser.note)
 
                     dataPaser?.listType.forEach(itemType => {
@@ -225,15 +243,24 @@
             })
         }
 
-        function eventAttenList(disable, checked) {
-            window.listAttendance.forEach(item => {
-                $(`#attendanceLst-${item.id} input[name=attendance-${item.id}]`).each(
-                    function(index) {
-                        $(this).prop('disabled', disable);
-                        $(this).prop('checked', checked)
-                    }
-                )
-            })
+        function eventAttenList(disable, checked, clean = false) {
+            try {
+                window.listAttendance.forEach(item => {
+                    $(`#attendanceLst-${item.id} input[name=attendance-${item.id}]`).each(
+                        function(index) {
+                            $(this).prop('disabled', disable);
+                            if (checked) {
+                                $(this).prop('checked', checked);
+                            }
+                            if (clean) {
+                                $(this).filter(`:checked`).prop('checked', false)
+                            }
+                        }
+                    )
+                })
+            } catch (error) {
+
+            }
         }
     });
 </script>

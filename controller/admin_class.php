@@ -456,6 +456,12 @@ class Action
 		while ($row = $get->fetch_assoc()) {
 			$data['data'][] = $row;
 		}
+
+		$get_time = $this->db->query("SELECT time_remaining FROM class_subject WHERE id = '$class_subject_id' LIMIT 1;");
+		while ($row = $get_time->fetch_assoc()) {
+			$data['time_remaining'] = $row['time_remaining'];
+		}
+		
 		return json_encode($data);
 	}
 
