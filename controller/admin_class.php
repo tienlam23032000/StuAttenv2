@@ -461,7 +461,7 @@ class Action
 		while ($row = $get_time->fetch_assoc()) {
 			$data['time_remaining'] = $row['time_remaining'];
 		}
-		
+
 		return json_encode($data);
 	}
 
@@ -534,33 +534,13 @@ class Action
 	}
 	function get_att_report()
 	{
-		extract($_POST);
-		$get = $this->db->query("SELECT s.* FROM students s inner join `class` c on c.id = s.class_id inner join class_subject cs on cs.class_id = c.id where cs.id = '$class_subject_id' ");
-		$record = $this->db->query("SELECT ar.*,a.class_subject_id FROM attendance_record ar inner join attendance_list a on a.id =ar.attendance_id where a.class_subject_id='$class_subject_id' and date_format(a.doc,'%Y-%m') = '$doc' ");
-		$data = array();
-		while ($row = $get->fetch_assoc()) {
-			$data['data'][] = $row;
+		extract($_GET);
+		$RESULT = array();
+		$QUERY = $this->db->query("CALL get_ReportAttendance($month,$year,$subject_class_id);");
+		while ($ROW = $QUERY->fetch_assoc()) {
+			$RESULT['data'][] = $ROW;
 		}
-		if ($record->num_rows > 0) {
-			while ($row = $record->fetch_assoc()) {
-				$data['record'][$row['student_id']][] = $row;
-				$data['attendance_id'] = $row['attendance_id'];
-			}
-		}
-		$noc = $this->db->query("SELECT * FROM attendance_list where class_subject_id='$class_subject_id' and date_format(doc,'%Y-%m') = '$doc' ");
-		$data['details']['noc'] = $noc->num_rows;
-
-
-		$qry = $this->db->query("SELECT s.subject,co.course,concat(c.level,'-',c.section) as `class` FROM class_subject cs inner join class c on c.id = cs.class_id inner join subjects s on s.id = cs.subject_id inner join courses co on co.id = c.id where cs.id = {$class_subject_id} ");
-		if (!empty($fetch_array)) {
-			foreach ($qry->fetch_array() as $k => $v) {
-				$data['details'][$k] = $v;
-			}
-		}
-
-		$data['details']['doc'] = date('F ,Y', strtotime($doc));
-
-		return json_encode($data);
+		return json_encode($RESULT);
 	}
 	function save_attendance()
 	{

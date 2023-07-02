@@ -63,9 +63,6 @@ switch ($global->thisPage) {
     case "attendanceList":
         include './view/components/Attendance_List.php';
         break;
-    case "attendanceRecord":
-        include './view/components/Attendance_Record.php';
-        break;
     case "attendanceReport":
         include './view/components/Attendance_Report.php';
         break;

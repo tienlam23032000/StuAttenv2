@@ -81,10 +81,10 @@
                 },
                 success: function(resp) {
                     window.listAttendance = JSON.parse(resp)?.data ?? {
-                        data: []
+                        data: []    
                     }
                     const timeRemaining = JSON.parse(resp)?.time_remaining ?? 0
-                    $('#viewTimeRemaining').html(`Time Remaining: ${parseFloat(timeRemaining).toFixed(2)}`)
+                    $('#viewTimeRemaining').html(`Time Remaining: ${parseFloat(timeRemaining).toFixed(2)}h`)
                     $('#tablePaging').DataTable().destroy()
                     $('#tablePaging').DataTable({
                         data: window.listAttendance,

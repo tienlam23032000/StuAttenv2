@@ -56,6 +56,14 @@ function getCurrentDate() {
   return formattedDate;
 }
 
+function getCurrentMonth() {
+  var today = new Date();
+  var month = String(today.getMonth() + 1).padStart(2, "0");
+  var year = today.getFullYear();
+  var formattedDate = year + "-" + month;
+  return formattedDate;
+}
+
 function getCurrentTime() {
   var today = new Date();
   var hour = String(today.getHours()).padStart(2, "0");
