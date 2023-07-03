@@ -167,4 +167,17 @@ if ($action == "end_subject") {
 		echo $save;
 }
 
+if ($action == "get_Dashboard_BarChart") {
+	$get = $crud->get_Dashboard_BarChart();
+	if ($get) 
+		echo $get;
+}
+
+if ($action == "get_Dashboard_PieChart") {
+	$get = $crud->get_Dashboard_PieChart();
+	if ($get) 
+		echo $get;
+}
+
+
 ob_end_flush();

@@ -336,45 +336,8 @@ class Action
 	function get_class_subject()
 	{
 		$data = array();
-		$sql = "SELECT\n"
-			. "    csb.id,\n"
-			. "    csb.class_id,\n"
-			. "    csb.subject_id,\n"
-			. "    csb.faculty_id,\n"
-			. "    csb.time_remaining,\n"
-			. "    CONCAT(\n"
-			. "        cs.`course`,\n"
-			. "        \" \",\n"
-			. "        c.`level`,\n"
-			. "        \"-\",\n"
-			. "        c.`section`\n"
-			. "    ) AS class_name,\n"
-			. "    s.subject AS subject_name,\n"
-			. "    f.name AS faculty_name,\n"
-			. "    CONCAT(\n"
-			. "        cs.`course`,\n"
-			. "        \" \",\n"
-			. "        c.`level`,\n"
-			. "        \"-\",\n"
-			. "        c.`section`,\n"
-			. "        \" \",\n"
-			. "        s.`subject`,\n"
-			. "        \" [\",\n"
-			. "        f.name,\n"
-			. "        \"]\"\n"
-			. "    ) AS class_subject_name\n"
-			. "FROM\n"
-			. "    `class_subject` AS csb\n"
-			. "LEFT JOIN `class` c ON\n"
-			. "    c.`id` = csb.class_id\n"
-			. "LEFT JOIN `courses` cs ON\n"
-			. "    c.course_id = cs.id\n"
-			. "LEFT JOIN `subjects` s ON\n"
-			. "    s.id = csb.subject_id\n"
-			. "LEFT JOIN `faculty` f ON\n"
-			. "    f.id = csb.faculty_id;";
 
-		$students = $this->db->query($sql);
+		$students = $this->db->query("CALL get_Dashboard_BarChart();");
 		while ($row = $students->fetch_assoc()) {
 			$data['data'][] = $row;
 		}
@@ -658,5 +621,33 @@ class Action
 		} catch (\Throwable $th) {
 			return 3;
 		}
+	}
+
+	function get_Dashboard_BarChart()
+	{
+		// extract($_POST);
+		$RESULT = array();
+
+		//Bar Chart
+		$QUER = $this->db->query("CALL get_Dashboard_BarChart();");
+		while ($ROW = $QUER->fetch_assoc()) {
+			$RESULT['data'][] = $ROW;
+		}
+
+		return json_encode($RESULT);
+	}
+
+	function get_Dashboard_PieChart()
+	{
+		// extract($_POST);
+		$RESULT = array();
+
+		//Pie Chart
+		$QUERY = $this->db->query("CALL get_Dashboard_PieChart();");
+		while ($ROW = $QUERY->fetch_assoc()) {
+			$RESULT['data'][] = $ROW;
+		}
+
+		return json_encode($RESULT);
 	}
 }
