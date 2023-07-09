@@ -40,10 +40,10 @@
                                                         <label for="subclass" class="form-label">Subclass</label>
                                                         <input type="text" class="form-control" name="subclass" id="subclass" autocomplete="off">
                                                     </div>
-                                                    <div class="col-12 form-check form-switch" style="padding-left: 3em;">
+                                                    <!-- <div class="col-12 form-check form-switch" style="padding-left: 3em;">
                                                         <input class="form-check-input" type="checkbox" name="status" id="flexSwitchCheckChecked" checked>
                                                         <label class="form-check-label" for="flexSwitchCheckChecked">Status</label>
-                                                    </div>
+                                                    </div> -->
                                                 </form> 
                                             </div>
                                             <div class="modal-footer">
@@ -64,7 +64,7 @@
                                     <th scope="col">Class</th>
                                     <th scope="col">SubClass</th>
                                     <th scope="col">Full Name Class</th>
-                                    <th scope="col">Status</th>
+                                    <!-- <th scope="col">Status</th> -->
                                     <th scope="col" class="text-center">Action</th>
                                 </tr>
                             </thead>
@@ -133,13 +133,13 @@
                         return `${row.course_name} ${data}-${row.subclass}`
                     }
                 },
-                {
-                    data: 'status',
-                    className: 'dt-body-left',
-                    render: function(data, type, row) {
-                        return data == 1 ? `<span class="badge bg-success">Active</span>` : `<span class="badge bg-secondary">Inactive</span>`
-                    }
-                },
+                // {
+                //     data: 'status',
+                //     className: 'dt-body-left',
+                //     render: function(data, type, row) {
+                //         return data == 1 ? `<span class="badge bg-success">Active</span>` : `<span class="badge bg-secondary">Inactive</span>`
+                //     }
+                // },
                 {
                     data: 'id',
                     className: 'dt-body-center',
@@ -169,7 +169,7 @@
             modal.find('.modal-body select[name=course_id]').val(recipient?.course_id)
             modal.find('.modal-body input[name=class]').val(recipient?.class)
             modal.find('.modal-body input[name=subclass]').val(recipient?.subclass)
-            modal.find('.modal-body input[name=status]').attr('checked', recipient?.status == 1 ? true : false)
+            // modal.find('.modal-body input[name=status]').attr('checked', recipient?.status == 1 ? true : false)
             modal.find('.modal-body input[name=id]').val(recipient?.id)
         })
 

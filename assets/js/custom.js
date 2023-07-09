@@ -68,8 +68,8 @@ function getCurrentTime() {
   var today = new Date();
   var hour = String(today.getHours()).padStart(2, "0");
   var min = String(today.getMinutes()).padStart(2, "0");
-  var second = String(today.getSeconds()).padStart(2, "0");
-  var formattedTime = hour + ":" + min + ":" + second;
+  // var second = String(today.getSeconds()).padStart(2, "0");
+  var formattedTime = hour + ":" + min;
   return formattedTime;
 }
 

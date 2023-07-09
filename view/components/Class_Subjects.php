@@ -46,6 +46,10 @@
                                                         <label for="time_remaining" class="form-label">Time Remaining</label>
                                                         <input type="text" class="form-control disable" name="time_remaining" id="time_remaining" autocomplete="off" >
                                                     </div>
+                                                    <div class="col-12 form-check form-switch" style="padding-left: 3em;">
+                                                        <input class="form-check-input" type="checkbox" name="status_cs" id="flexSwitchCheckChecked" checked>
+                                                        <label class="form-check-label" for="flexSwitchCheckChecked">Status Class Subject</label>
+                                                    </div>
                                                 </form>
                                             </div>
                                             <div class="modal-footer">
@@ -66,6 +70,7 @@
                                     <th scope="col">Subject</th>
                                     <th scope="col">Faculty</th>
                                     <th scope="col">Time Remaining</th>
+                                    <th scope="col">Status Class Subject</th>
                                     <th scope="col" class="text-center">Action</th>
                                 </tr>
                             </thead>
@@ -131,6 +136,13 @@
                     className: 'dt-body-right'
                 },
                 {
+                    data: 'status_cs',
+                    className: 'dt-body-right',
+                    render: function(data, type, row) {
+                        return data == 1 ? `<span class="badge bg-success">Active</span>` : `<span class="badge bg-secondary">Inactive</span>`
+                    }
+                },
+                {
                     data: 'id',
                     className: 'dt-body-center',
                     render: function(data, type, row) {
@@ -163,6 +175,7 @@
             modal.find('.modal-body select[name=subject_id]').val(recipient?.subject_id)
             modal.find('.modal-body select[name=faculty_id]').val(recipient?.faculty_id)
             modal.find('.modal-body input[name=time_remaining]').val(recipient?.time_remaining)
+            modal.find('.modal-body input[name=status_cs]').attr('checked', recipient?.status_cs == 1 ? true : false)
             modal.find('.modal-body input[name=id]').val(recipient?.id)
         })
 

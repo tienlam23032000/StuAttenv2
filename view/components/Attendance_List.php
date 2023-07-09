@@ -9,7 +9,7 @@
                         <div class="d-flex justify-content-between">
                             <div class="card-title">
                                 <h5>Attendance List</h5>
-                                <h6 id="viewTimeRemaining">Time Remaining: 0h</h6>
+                                <h6 id="viewTimeRemaining">Subject Session: 0</h6>
                             </div>
 
                             <div class="row card-header justify-content-end w-75 p-3">
@@ -44,6 +44,7 @@
                             <thead>
                                 <tr>
                                     <th scope="col">#</th>
+                                    <th scope="col">#ID</th>
                                     <th scope="col">Student</th>
                                     <th scope="col" class="text-center">Attendance</th>
                                 </tr>
@@ -81,10 +82,10 @@
                 },
                 success: function(resp) {
                     window.listAttendance = JSON.parse(resp)?.data ?? {
-                        data: []    
+                        data: []
                     }
                     const timeRemaining = JSON.parse(resp)?.time_remaining ?? 0
-                    $('#viewTimeRemaining').html(`Time Remaining: ${parseFloat(timeRemaining).toFixed(2)}h`)
+                    $('#viewTimeRemaining').html(`Subject Session: ${timeRemaining}`)
                     $('#tablePaging').DataTable().destroy()
                     $('#tablePaging').DataTable({
                         data: window.listAttendance,
@@ -96,6 +97,10 @@
                                 }
                             },
                             {
+                                data: 'id_no',
+                                className: 'dt-body-left'
+                            },
+                            {
                                 data: 'name',
                                 className: 'dt-body-left'
                             },
@@ -104,28 +109,32 @@
                                 className: 'dt-body-center',
                                 render: function(data, type, row) {
                                     return `
-                                <div class="d-flex justify-content-center" id="attendanceLst-${data}">
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input present-inp" name="attendance-${data}" type="radio" value="1">
-                                        <label class="form-check-label present-lbl">Present</label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input absent-inp" name="attendance-${data}" type="radio" value="0">
-                                        <label class="form-check-label absent-lbl">Absent</label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input late-inp" name="attendance-${data}" type="radio" value="2">
-                                        <label class="form-check-label late-lbl">Late</label>
-                                    </div>
-                                </div>
-                            `
+                                        <div class="d-flex justify-content-center" id="attendanceLst-${data}">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input present-inp" name="attendance-${data}" type="radio" value="1"/>
+                                                <label class="form-check-label present-lbl">Present</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input absent-inp" name="attendance-${data}" type="radio" value="0" />
+                                                <label class="form-check-label absent-lbl">Absent</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input late-inp" name="attendance-${data}" type="radio" value="2" />
+                                                <label class="form-check-label late-lbl">Licensed</label>
+                                            </div>
+                                        </div>
+                                    `
                                 }
                             }
                         ],
                         columnDefs: [{
                             targets: -1,
                             className: 'dt-body-center'
-                        }]
+                        }],
+                        lengthMenu: [
+                            [-1],
+                            ['All']
+                        ]
                     });
                 }
             })
@@ -212,7 +221,7 @@
                         // $("#timeAttendance").prop('disabled', false);
                         $('#endSubject').prop('disabled', false);
                         $("#saveAttendance").prop('disabled', false);
-                        eventAttenList(false, false, true)
+                        eventAttenList(false, false, true, false)
                         // realTime = setInterval(function() {
                         //     $('#timeAttendance').val(getCurrentTime())
                         // }, 999);
@@ -228,7 +237,7 @@
                     } else {
                         $("#saveAttendance").prop('disabled', false);
                     }
-                    $('#timeAttendance').val(dataPaser.startTime)
+                    $('#timeAttendance').val(dataPaser.startTime.slice(0,5))
                     // $("#timeAttendance").prop('disabled', true);
                     $('#noteAttendance').val(dataPaser.note)
 
@@ -243,7 +252,7 @@
             })
         }
 
-        function eventAttenList(disable, checked, clean = false) {
+        function eventAttenList(disable, checked, defaultValueOne = false, clean = false) {
             try {
                 window.listAttendance.forEach(item => {
                     $(`#attendanceLst-${item.id} input[name=attendance-${item.id}]`).each(
@@ -251,6 +260,9 @@
                             $(this).prop('disabled', disable);
                             if (checked) {
                                 $(this).prop('checked', checked);
+                            }
+                            if (defaultValueOne) {
+                                $(this).filter(`[value=1]`).prop('checked', true)
                             }
                             if (clean) {
                                 $(this).filter(`:checked`).prop('checked', false)

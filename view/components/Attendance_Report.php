@@ -39,7 +39,7 @@
                             <thead>
                                 <tr>
                                     <th scope="col">#</th>
-                                    <th scope="col">#Id Number</th>
+                                    <th scope="col">#ID</th>
                                     <th scope="col">Student</th>
                                     <th scope="col">Present</th>
                                     <th scope="col">Late</th>

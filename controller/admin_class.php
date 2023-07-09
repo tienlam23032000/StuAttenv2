@@ -366,15 +366,26 @@ class Action
 		if (empty($faculty_id)) {
 			return 5;
 		}
-
 		$data = "";
 		$data2 = "";
 		foreach ($_POST as $k => $v) {
 			if (!in_array($k, array('id')) && !is_numeric($k)) {
 				if (empty($data)) {
+					if ($k == 'status') {
+						$statusParse = $v == 'on' ? 1 : 0;
+						$data .= ", status_cs=$statusParse ";
+						$data2 .= "and status_cs=$statusParse ";
+						continue;
+					}
 					$data .= " $k='$v' ";
 					$data2 .= " $k='$v' ";
 				} else {
+					if ($k == 'status') {
+						$statusParse = $v == 'on' ? 1 : 0;
+						$data .= ", status_cs=$statusParse ";
+						$data2 .= "and status_cs=$statusParse ";
+						continue;
+					}
 					$data .= ", $k='$v' ";
 					$data2 .= "and $k='$v' ";
 				}
@@ -528,6 +539,12 @@ class Action
 				$this->db->query($QUERY);
 			}
 			return 1; //UPDATE
+		} else {
+			// Update Time Remaining
+			$QUERY_TIME = "UPDATE `class_subject` SET"
+				. " `time_remaining` = `time_remaining` - 1\n"
+				. " WHERE class_subject.id = '$class_subject_id';";
+			$this->db->query($QUERY_TIME);
 		}
 		// Nếu trong bảng attendance_list chưa có bản ghi (< 0)
 		/*
@@ -612,11 +629,11 @@ class Action
 			$QUERY_ENDTIME = "UPDATE `attendance_list` SET `end_time`='$endTime' WHERE `id` = '$attendance_id';";
 			$this->db->query($QUERY_ENDTIME);
 
-			// Update Time Remaining
-			$QUERY_TIME = "UPDATE `class_subject` SET"
-				. " `time_remaining` = `time_remaining` - '$timeRemaining'\n"
-				. " WHERE class_subject.id = '$class_subject_id';";
-			$this->db->query($QUERY_TIME);
+			// // Update Time Remaining
+			// $QUERY_TIME = "UPDATE `class_subject` SET"
+			// 	. " `time_remaining` = `time_remaining` - '$timeRemaining'\n"
+			// 	. " WHERE class_subject.id = '$class_subject_id';";
+			// $this->db->query($QUERY_TIME);
 			return 1;
 		} catch (\Throwable $th) {
 			return 3;
