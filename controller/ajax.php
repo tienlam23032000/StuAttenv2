@@ -179,5 +179,9 @@ if ($action == "get_Dashboard_PieChart") {
 		echo $get;
 }
 
-
+if ($action == "get_Details_Record") {
+	$get = $crud->get_Details_Record();
+	if ($get) 
+		echo $get;
+}
 ob_end_flush();

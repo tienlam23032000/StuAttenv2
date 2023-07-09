@@ -372,19 +372,17 @@ class Action
 		foreach ($_POST as $k => $v) {
 			if (!in_array($k, array('id')) && !is_numeric($k)) {
 				if (empty($data)) {
-					if ($k == 'status') {
+					if ($k == 'status_cs') {
 						$statusParse = $v == 'on' ? 1 : 0;
 						$data .= ", status_cs=$statusParse ";
-						$data2 .= "and status_cs=$statusParse ";
 						continue;
 					}
 					$data .= " $k='$v' ";
 					$data2 .= " $k='$v' ";
 				} else {
-					if ($k == 'status') {
+					if ($k == 'status_cs') {
 						$statusParse = $v == 'on' ? 1 : 0;
 						$data .= ", status_cs=$statusParse ";
-						$data2 .= "and status_cs=$statusParse ";
 						continue;
 					}
 					$data .= ", $k='$v' ";
@@ -511,7 +509,7 @@ class Action
 	{
 		extract($_GET);
 		$RESULT = array();
-		$QUERY = $this->db->query("CALL get_ReportAttendance($month,$year,$subject_class_id);");
+		$QUERY = $this->db->query("CALL get_ReportAttendance($subject_class_id);");
 		while ($ROW = $QUERY->fetch_assoc()) {
 			$RESULT['data'][] = $ROW;
 		}
@@ -662,6 +660,24 @@ class Action
 
 		//Pie Chart
 		$QUERY = $this->db->query("CALL get_Dashboard_PieChart();");
+		while ($ROW = $QUERY->fetch_assoc()) {
+			$RESULT['data'][] = $ROW;
+		}
+
+		return json_encode($RESULT);
+	}
+
+	function get_Details_Record()
+	{
+		extract($_GET);
+		$RESULT = array();
+		$QUERY = "SELECT * \n"
+			. "FROM attendance_record  ar\n"
+			. "JOIN attendance_list al on ar.attendance_id = al.id\n"
+			. "WHERE student_id = $studentId and class_subject_id = $classSubjectId;";
+
+		//Pie Chart
+		$QUERY = $this->db->query($QUERY);
 		while ($ROW = $QUERY->fetch_assoc()) {
 			$RESULT['data'][] = $ROW;
 		}
