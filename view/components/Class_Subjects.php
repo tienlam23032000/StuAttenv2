@@ -110,8 +110,13 @@
         getDataCboxAsync('get_subject', 'id', 'subject', '#subject_selected')
         getDataCboxAsync('get_faculty', 'id', 'name', '#faculty_selected')
 
+
+        const accountEmail = '<?php echo $global->emailUser ;?>';
+        const accountType = '<?php echo $global->typeUser ;?>';
+        const param = `email="${accountEmail}"&typeAccount=${accountType}`
+
         $('#tablePaging').DataTable({
-            ajax: 'controller/ajax.php?action=get_class_subject',
+            ajax: `controller/ajax.php?action=get_class_subject&${param}`,
             columns: [{
                     data: 'id',
                     className: 'dt-body-left',

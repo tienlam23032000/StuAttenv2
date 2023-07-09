@@ -62,7 +62,12 @@
 
 <script>
     $(document).ready(function() {
-        getDataCboxAsync('get_class_subject', 'id', 'class_subject_name', '#selectAttendance')
+        const accountEmail = '<?php echo $global->emailUser ;?>';
+        const accountType = '<?php echo $global->typeUser ;?>';
+
+        const param = `email="${accountEmail}"&typeAccount=${accountType}`
+        getDataCboxAsync('get_class_subject', 'id', 'class_subject_name', '#selectAttendance', param)
+        
         $('#monthReport').prop('max', getCurrentMonth())
         $('#monthReport').val(getCurrentMonth())
         $('#filterReport').prop('disabled', true)

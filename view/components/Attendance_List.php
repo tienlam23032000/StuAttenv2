@@ -62,11 +62,15 @@
 
 <script>
     $(document).ready(function() {
+        const accountEmail = '<?php echo $global->emailUser ;?>';
+        const accountType = '<?php echo $global->typeUser ;?>';
+
         // FillData 
         $('#dateAttendance').val(getCurrentDate())
         $('#timeAttendance').val(getCurrentTime())
         $('#dateAttendance').prop('max', getCurrentDate())
-        getDataCboxAsync('get_class_subject', 'id', 'class_subject_name', '#selectAttendance')
+        const param = `email="${accountEmail}"&typeAccount=${accountType}`
+        getDataCboxAsync('get_class_subject', 'id', 'class_subject_name', '#selectAttendance', param)
 
         // let realTime = setInterval(function() {
         //     $('#timeAttendance').val(getCurrentTime())

@@ -26,9 +26,9 @@ function alert_toast($msg = "TEST", $bg = "success", $delay = 3000) {
     .toast("show");
 }
 
-async function getDataCboxAsync(action, fieldId, fieldName, idCbox) {
+async function getDataCboxAsync(action, fieldId, fieldName, idCbox, param = '') {
   await $.ajax({
-    url: `controller/ajax.php?action=${action}`,
+    url: `controller/ajax.php?action=${action}&${param}`,
     cache: false,
     contentType: false,
     processData: false,

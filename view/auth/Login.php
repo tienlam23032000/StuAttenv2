@@ -59,8 +59,9 @@
             },
             success: function(resp) {
                 if (resp == 1) {
-                    location.href = 'index.php?page=dashboard';
-                } else {
+                    location.href = 'index.php';
+                }
+                else {
                     $('#login-form').prepend('<div class="alert alert-danger">Username or password is incorrect.</div>')
                     $('#login-form button[type="submit"]').removeAttr('disabled').html('Login');
                 }

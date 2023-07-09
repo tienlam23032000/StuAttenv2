@@ -190,7 +190,6 @@ class Action
 		$data2 = " course_id = '$course_id' ";
 		$data2 .= "and level = '$class' ";
 		$data2 .= "and section = '$subclass' ";
-		$data2 .= "and status = '$statusParse' ";
 
 		$check = $this->db->query("SELECT * FROM class where $data2 " . (!empty($id) ? ' and id!=$id ' : ''));
 		if ($check && $check->num_rows > 0) {
@@ -335,9 +334,11 @@ class Action
 
 	function get_class_subject()
 	{
+		$email = $_GET['email'];
+		$typeAccount = $_GET['typeAccount'];
 		$data = array();
 
-		$students = $this->db->query("CALL get_Dashboard_BarChart();");
+		$students = $this->db->query("CALL get_Dashboard_BarChart($email,$typeAccount);");
 		while ($row = $students->fetch_assoc()) {
 			$data['data'][] = $row;
 		}

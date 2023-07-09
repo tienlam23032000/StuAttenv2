@@ -18,6 +18,7 @@ if (!isset($_GET['page'])) {
 $global = new stdClass();
 $global->nameUser = $_SESSION['login_name'];
 $global->typeUser = $_SESSION['login_type'];
+$global->emailUser = $_SESSION['login_username'];
 $global->arrayRule = $global->typeUser == 1 ? $adminRule : $staffRule;
 $global->arrayIcon = $global->typeUser == 1 ? $adminIcon : $staffIcon;
 $global->thisPage = $_GET['page'];
