@@ -32,7 +32,7 @@
                                                         <input type="text" class="form-control" name="subject" id="subject" autocomplete="off">
                                                     </div>
                                                     <div class="col-12">
-                                                        <label for="time_subject" class="form-label">Time Subject (h)</label>
+                                                        <label for="time_subject" class="form-label">Time Subject</label>
                                                         <input type="number" min="1" max="300" class="form-control" name="time_subject" id="time_subject" autocomplete="off">
                                                     </div>
                                                     <div class="col-12">
@@ -114,7 +114,7 @@
                     data: 'time_subject',
                     className: 'dt-body-left',
                     render: function(data, type, row) {
-                        return `${data}h`
+                        return `${data}`
                     }
                 },
                 {

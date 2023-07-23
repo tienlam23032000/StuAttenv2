@@ -336,11 +336,14 @@ class Action
 	{
 		$email = $_GET['email'];
 		$typeAccount = $_GET['typeAccount'];
+		$isActive = $_GET['isActive'];
 		$data = array();
-
-		$students = $this->db->query("CALL get_Dashboard_BarChart($email,$typeAccount);");
-		while ($row = $students->fetch_assoc()) {
-			$data['data'][] = $row;
+		
+		$students = $this->db->query("CALL get_Dashboard_BarChart($email,$typeAccount,$isActive);");
+		if ($students && $students->num_rows > 0) {
+			while ($row = $students->fetch_assoc()) {
+				$data['data'][] = $row;
+			}
 		}
 		return json_encode($data);
 	}
@@ -390,6 +393,7 @@ class Action
 				}
 			}
 		}
+
 		$check = $this->db->query("SELECT * FROM class_subject where $data2 " . (!empty($id) ? " and id != {$id} " : ''));
 		if ($check && $check->num_rows > 0) {
 			return 2;
@@ -645,7 +649,7 @@ class Action
 		$RESULT = array();
 
 		//Bar Chart
-		$QUER = $this->db->query("CALL get_Dashboard_BarChart();");
+		$QUER = $this->db->query("CALL get_Dashboard_BarChart('admin@gmail.com',1,3);");
 		while ($ROW = $QUER->fetch_assoc()) {
 			$RESULT['data'][] = $ROW;
 		}

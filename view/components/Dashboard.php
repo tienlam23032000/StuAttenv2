@@ -70,7 +70,7 @@
             dataLabels: {
                 enabled: true,
                 formatter: function(val, opt) {
-                    return val + ' h'
+                    return val + ' '
                 },
             },
             xaxis: {

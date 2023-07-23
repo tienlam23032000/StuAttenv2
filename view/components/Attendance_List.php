@@ -69,7 +69,7 @@
         $('#dateAttendance').val(getCurrentDate())
         $('#timeAttendance').val(getCurrentTime())
         $('#dateAttendance').prop('max', getCurrentDate())
-        const param = `email="${accountEmail}"&typeAccount=${accountType}`
+        const param = `email="${accountEmail}"&typeAccount=${accountType}&isActive=1`
         getDataCboxAsync('get_class_subject', 'id', 'class_subject_name', '#selectAttendance', param)
 
         // let realTime = setInterval(function() {

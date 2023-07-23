@@ -81,7 +81,7 @@
         const accountEmail = '<?php echo $global->emailUser; ?>';
         const accountType = '<?php echo $global->typeUser; ?>';
 
-        const param = `email="${accountEmail}"&typeAccount=${accountType}`
+        const param = `email="${accountEmail}"&typeAccount=${accountType}&isActive=3`
         getDataCboxAsync('get_class_subject', 'id', 'class_subject_name', '#selectAttendance', param)
 
         $('#excelReport').prop('disabled', true)

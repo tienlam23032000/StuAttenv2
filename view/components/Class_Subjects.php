@@ -44,7 +44,7 @@
                                                     </div>
                                                     <div class="col-12">
                                                         <label for="time_remaining" class="form-label">Time Remaining</label>
-                                                        <input type="text" class="form-control disable" name="time_remaining" id="time_remaining" autocomplete="off" >
+                                                        <input type="text" class="form-control disable" name="time_remaining" id="time_remaining" autocomplete="off">
                                                     </div>
                                                     <div class="col-12 form-check form-switch" style="padding-left: 3em;">
                                                         <input class="form-check-input" type="checkbox" name="status_cs" id="flexSwitchCheckChecked" checked>
@@ -111,9 +111,9 @@
         getDataCboxAsync('get_faculty', 'id', 'name', '#faculty_selected')
 
 
-        const accountEmail = '<?php echo $global->emailUser ;?>';
-        const accountType = '<?php echo $global->typeUser ;?>';
-        const param = `email="${accountEmail}"&typeAccount=${accountType}`
+        const accountEmail = '<?php echo $global->emailUser; ?>';
+        const accountType = '<?php echo $global->typeUser; ?>';
+        const param = `email="${accountEmail}"&typeAccount=${accountType}&isActive=3`
 
         $('#tablePaging').DataTable({
             ajax: `controller/ajax.php?action=get_class_subject&${param}`,
@@ -229,9 +229,13 @@
         //Save
         $('#form').submit(function(e) {
             e.preventDefault()
+            var formData = new FormData($(this)[0])
+            var checkbox = $('#form').find("#flexSwitchCheckChecked").prop("checked") ? "on" : "off"
+            formData.append('status_cs', checkbox)
+
             $.ajax({
                 url: 'controller/ajax.php?action=save_class_subject',
-                data: new FormData($(this)[0]),
+                data: formData,
                 cache: false,
                 contentType: false,
                 processData: false,
